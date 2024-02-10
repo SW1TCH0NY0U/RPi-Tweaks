@@ -23,7 +23,7 @@ sudo apt-get clean -y
 
 # ENABLE-SERVICES
 
-sudo systemctl enable lightdm
+sudo systemctl enable lightdm vnstat smbd
 
 # DISABLE-SERVICES
 
@@ -36,37 +36,10 @@ echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] http
 sudo apt-get update -y
 sudo apt-get install -y --no-install-recommends --no-install-suggests brave-browser
 
-# WINDOW-MANAGER
-
-sudo mkdir -p /home/pi/.config/
-sudo cp -r i3 i3status /home/pi/.config/
-
-# MY-PICTURES
-
-sudo mkdir -p /home/pi/Pictures/
-sudo cp -r joker.jpg /home/pi/Pictures/
-
 # CREATE-DIRECTORIES
 
 sudo mkdir -p /home/pi/Downloads/
-
-# USR-LOCAL-BIN
-
-sudo cp -r cache-off chrome deb-update deb-remove my-ip my-refresh-rate rpi-brave rpi-webcord rpi-nzbget rpi-nzbhydra vpn-on vpn-off comp-off /usr/local/bin/
-
-# VPN
-
-sudo cp -r ipt.sh masq.sh /home/pi/
-sudo sh ipsec.sh
-sudo sh certs.sh 
-
-# XORG-SERVER
-
-sudo cp -r 99-vc4.conf /etc/X11/xorg.conf.d/
-
-# COPY-OVER-CONKY
-
-sudo cp -r .conky /home/pi/
+sudo mkdir -p /home/pi/Pictures/
 
 # INSTALL-WEECHAT
 
@@ -78,11 +51,6 @@ sudo chmod 700 /root/.gnupg
 sudo mkdir -p /usr/share/keyrings
 sudo gpg --no-default-keyring --keyring /usr/share/keyrings/weechat-archive-keyring.gpg --keyserver hkps://keys.openpgp.org --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
 sudo apt-get install --no-install-recommends --no-install-suggests -y weechat-curses weechat-plugins weechat-python weechat-perl
-
-# INSTALL-DPKG
-
-sudo dpkg -i webcord_4.7.1_arm64.deb
-sudo apt-get install -f
 
 ### MESA-GRAPHICS
 
