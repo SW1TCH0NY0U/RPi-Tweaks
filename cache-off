@@ -1,0 +1,4 @@
+sudo findmnt -O discard
+sudo mount -o remount,nodiscard /dev/sdb2
+sudo sysctl vm.drop_caches=3
+sudo hdparm -W 0 /dev/sda
