@@ -1,0 +1,73 @@
+general {
+        output_format = "i3bar"
+        colors = false
+        markup = pango
+        interval = 5
+        color_good = '#7309F3'
+		color_degraded = '#7309F3'
+		color_bad = '#7309F3'
+}
+
+order += "load"
+order += "cpu_temperature 0"
+order += "disk /home"
+order += "memory"
+order += "ethernet eth0"
+order += "wireless wlan0"
+order += "battery 0"
+order += "volume master"
+order += "tztime local"
+
+load {
+        format = "<span background='#F30918'> %5min Load </span>"
+}
+
+cpu_temperature 0 {
+        format = "<span background='#7309F3'> %degrees °C </span>"
+        path = "/sys/class/thermal/thermal_zone0/temp"
+}
+
+disk "/home" {
+        format = "<span background='#7309F3'> %free Free </span>"
+
+}
+
+memory {
+                   format = "<span background='#7309F3'> %used </span>"
+                   threshold_degraded = "10%"
+                   format_degraded = "MEMORY: %free"
+}
+
+ethernet eth0 {
+        format_up = "<span background='#7309F3'> %ip </span>"
+        format_down = "<span background='#7309F3'> Disconnected </span>"
+}
+
+wireless wlan0 {
+        format_up = "<span background='#7309F3'> %essid </span>"
+        format_down = "<span background='#7309F3'> Disconnected </span>"
+}
+
+battery 0 {
+                   format = "<span background='#7309F3'> %status %percentage %remaining %emptytime </span>"
+                   format_down = "<span background='#7309F3'> No battery </span>"
+                   status_chr = "CHR"
+                   status_bat = "BAT"
+                   status_unk = "UNK"
+                   status_full = "FULL"
+                   path = "/sys/class/power_supply/BAT1/uevent"
+                   low_threshold = 10
+
+}
+
+volume master {
+        format = "<span background='#7309F3'> %volume </span>"
+        format_muted = "<span background='#7309F3'> Muted </span>"
+        device = "default"
+        mixer = "Master"
+        mixer_idx = 0
+}
+
+tztime local {
+		format = "<span background='#7309F3'> %a %-d %b %H:%M </span>"
+}
