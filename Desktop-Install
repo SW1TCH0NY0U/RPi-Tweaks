@@ -52,8 +52,6 @@ sudo mkdir -p /usr/share/keyrings
 sudo gpg --no-default-keyring --keyring /usr/share/keyrings/weechat-archive-keyring.gpg --keyserver hkps://keys.openpgp.org --recv-keys 11E9DE8848F2B65222AA75B8D1820DB22A11534E
 sudo apt-get install --no-install-recommends --no-install-suggests -y weechat-curses weechat-plugins weechat-python weechat-perl
 
-### MESA-GRAPHICS
-
 sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
 sudo apt-get install --no-install-recommends --no-install-suggests -y python3-pip libxcb-randr0-dev libxrandr-dev \
         libxcb-xinerama0-dev libxinerama-dev libxcursor-dev \
@@ -72,11 +70,12 @@ sudo apt purge meson -y
 sudo pip3 install meson 
 sudo pip3 install mako
 cd ~/Downloads
-git clone https://gitlab.freedesktop.org/mesa/mesa.git mesa_vulkan
-cd mesa_vulkan
-CFLAGS="-mcpu=cortex-a76" CXXFLAGS="-mcpu=cortex-a76" meson --prefix /usr -Dplatforms=x11 -Dvulkan-drivers=broadcom -Ddri-drivers=VC4,V3D -Dgallium-drivers=kmsro,v3d,vc4 -Dbuildtype=release build
+git clone -b mesa-23.3.5 https://gitlab.freedesktop.org/mesa/mesa.git mesa
+cd mesa
+CFLAGS="-mcpu=cortex-a76" CXXFLAGS="-mcpu=cortex-a76" meson --prefix /usr -Dplatforms=x11 -Dvulkan-drivers=broadcom -Dgallium-drivers=kmsro,v3d,vc4 -Dbuildtype=release build
 ninja -C build -j4
 sudo ninja -C build install
+
 
 # UPDATE-YOUR-SYSTEM
 
