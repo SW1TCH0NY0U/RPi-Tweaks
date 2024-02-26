@@ -1,0 +1,172 @@
+#!/bin/bash
+
+# CONFIG-TXT-RPI5
+
+# sudo cp -R config.txt /boot/broadcom/
+
+# INSTALL-CERTIFICATES
+
+sudo apt-get install --no-install-recommends --no-install-suggests -y software-properties-common ca-certificates dirmngr gpg-agent apt-transport-https
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get dist-upgrade -y
+sudo apt-get full-upgrade -y
+
+# UPDATED-GPU-DRVIERS
+
+sudo add-apt-repository ppa:oibaf/graphics-drivers -y
+
+# UPDATE-SYSTEM
+
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get dist-upgrade -y
+sudo apt-get full-upgrade -y
+
+# MY-APPS
+
+sudo apt-get install --no-install-recommends --no-install-suggests -y weechat powerstat docker.io conky-all xserver-xorg-video-fbdev xserver-xorg xinit x11-xserver-utils xutils htop powertop udisks2 udiskie ntfs-3g kodi xfce4-settings xterm android-tools-adb android-tools-fastboot iptables wget curl git lbzip2 bzip2 p7zip xarchiver engrampa unrar unzip thunar thunar-volman gvfs gvfs-backends gvfs-fuse gnome-screenshot gnome-disk-utility i3-wm i3status i3lock i3blocks dmenu nitrogen feh scrot znc wireguard-tools openvpn network-manager-gnome network-manager network-manager-openvpn network-manager-openvpn-gnome chromium-browser pavucontrol pulseaudio volumeicon-alsa mpv vlc qbittorrent qbittorrent-nox x11-xserver-utils vnstat squid samba smbclient cifs-utils sakura mousepad pcmanfm pcmanfm-qt hexchat hexchat-plugins gnome-icon-theme lxappearance oxygen-icon-theme neofetch zsh rsync nmap screen openssh-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings hdparm
+
+# CLEAN-PACKAGES
+
+sudo apt-get autoremove --purge -y
+sudo apt-get autoclean -y
+sudo apt-get clean -y
+
+# INTERNET-BROWSER
+
+sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+sudo apt-get update -y
+sudo apt-get install -y --no-install-recommends --no-install-suggests brave-browser
+
+# WINDOW-MANAGER
+
+sudo mkdir -p /home/pi/Downloads/
+sudo mkdir -p /home/pi/Desktop
+sudo mkdir -p /home/pi/.config/
+sudo cp -R /mnt/sdcard/NEW/i3status /home/pi/.config/
+sudo cp -R /mnt/sdcard/NEW/i3 /home/pi/.config/
+sudo cp -R .fonts /home/pi/
+
+# MY-PICTURES
+
+sudo mkdir -p /home/pi/Pictures/
+sudo cp -R me.png /home/pi/Pictures/
+
+# USR-LOCAL-BIN
+
+sudo cp -R off-hdparm pia-vpn-on chromium-ubuntu deb-update deb-remove my-ip my-refresh-rate rpi-brave rpi-webcord rpi-nzbget rpi-nzbhydra vpn-on vpn-off comp-off /usr/local/bin/
+
+# XORG-SERVER
+
+sudo cp -R 99-vc4.conf /etc/X11/xorg.conf.d/
+
+# COPY-OVER-CONKY
+
+sudo cp -R .conky /home/pi/
+
+# INSTALL-DPKG
+
+sudo dpkg -i webcord_4.8.0_arm64.deb
+sudo apt-get install -f -y
+
+# FIREFOX-ESR-AND-FIREFOX-STANDARD
+
+sudo add-apt-repository ppa:mozillateam/ppa -y
+sudo apt-get update -y
+sudo apt-get install --no-install-recommends --no-install-suggests firefox-esr -y
+echo '
+Package: *
+Pin: release o=LP-PPA-mozillateam
+Pin-Priority: 1001
+
+Package: firefox
+Pin: version 1:1snap1-0ubuntu2
+Pin-Priority: -1
+' | sudo tee /etc/apt/preferences.d/mozilla-firefox
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get full-upgrade -y
+sudo apt-get dist-upgrade -y
+sudo apt-get install --no-install-recommends --no-install-suggests firefox -y
+echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+
+# UPDATE-YOUR-SYSTEM
+
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get full-upgrade -y
+sudo apt-get dist-upgrade -y
+
+# INSTALL-STRONGWAN-VPN
+
+sudo apt-get install --no-install-recommends --no-install-suggests -y strongswan libcharon-extra-plugins libstrongswan-extra-plugins libcharon-extauth-plugins
+
+# CLEAN-PACKAGES
+
+sudo apt-get autoremove --purge -y
+sudo apt-get autoclean -y
+sudo apt-get clean -y
+
+# CD-TO-SDCARD
+
+cd /mnt/sdcard/HDDBackup/Linux/Commands/
+
+# VPN-APPLY
+
+sudo cp -R VPN /home/pi/
+sudo cp -R masq.sh /home/pi/
+sudo cp -R ipt.sh /home/pi/
+# sudo sh ipsec.sh
+# sudo sh certs.sh
+
+# NZBGET-USENET
+
+sudo cp -R nzbget.service /etc/systemd/system/
+sudo cp -R nzbget /home/pi/Downloads/
+sudo systemctl daemon-reload
+
+# ENABLE-SERVICES
+
+sudo systemctl enable smbd vnstat NetworkManager nzbget
+
+# DISABLE-SERVICES
+
+sudo systemctl disable --now squid nmbd zramswap lightdm docker
+
+# SAMBA-NETWORK-SHARES
+
+sudo systemctl daemon-reload
+sudo rm -rf /etc/samba/smb.conf
+sudo cp -R smb.conf /etc/samba/
+sudo systemctl daemon-reload
+
+# QBITTORRENT-STABLE
+
+sudo add-apt-repository ppa:qbittorrent-team/qbittorrent-stable -y
+sudo apt-get update -y
+sudo apt-get install --no-install-recommends --no-install-suggests qbittorrent qbittorrent-nox -y
+
+# START-XORG-XINIT-SERVER
+
+sudo cp -R .xinitrc /home/pi/
+
+# ALL-WRITE-PERMISSIONS
+
+sudo chmod -R 0777 /home/pi/
+sudo chown -R pi:pi /home/pi
+
+# USER-AND-ROOT-PASSWORD-CHANGE
+
+echo Changing password for the user pi...
+sudo passwd pi
+echo Changing password for the user root...
+sudo passwd root
+
+# USER-AND-ROOT-PASSWORD-CHANGE-SAMBA
+
+echo Changing SAMBA password for the user pi...
+sudo smbpasswd -a pi
+echo Changing SAMBA password for the user root...
+sudo smbpasswd -a root
