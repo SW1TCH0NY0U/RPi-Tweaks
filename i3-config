@@ -1,21 +1,20 @@
 set $mod Mod4
 
-font pango:Ubuntu Regular 14
+font pango:monospace 12
 
 # start a terminal
 bindsym $mod+Return exec sakura
 
 # Autostart
-exec --no-startup-id nitrogen --restore
+exec --no-startup-id "sh -c 'sleep 5; exec feh --bg-fill /home/pi/Pictures/me.png'"
+# exec --no-startup-id "sh -c 'sleep 5; exec /home/pi/.conky/conky -c conkyrc'"
 exec --no-startup-id setxkbmap gb
 exec --no-startup-id volumeicon
 exec --no-startup-id nm-applet
-exec --no-startup-id /usr/local/bin/my-refresh-rate
-exec --no-startup-id /usr/local/bin/cache-off
-exec --no-startup-id /home/pi/.conky/AutoStart.sh
+exec --no-startup-id xrandr -s 1920x1080 -r 60
 
 # FireFox
-bindsym $mod+I exec firefox
+bindsym $mod+I exec firefox-esr
 
 # File-Manager
 bindsym $mod+F exec thunar /home/pi/
@@ -35,22 +34,15 @@ bindsym $mod+Shift+q kill
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run
 
-# class                 border  backgr. text    indicator child_border
-client.focused          #000000 #000000 #ff2929 #7309F3   #000000
-client.focused_inactive #000000 #000000 #ff2929 #7309F3   #000000
-client.unfocused        #000000 #000000 #ff2929 #7309F3   #000000
-client.urgent           #000000 #000000 #ff2929 #7309F3   #000000
-client.placeholder      #000000 #000000 #ff2929 #7309F3   #000000
-client.background       #000000
-
-# workspaces
-set $ws1 "1: VPN"
-set $ws2 "2: Internet"
-set $ws3 "3: IRC"
-set $ws4 "4: Discord"
-set $ws5 "5: Terminal"
-set $ws6 "6: FileManager"
-set $ws7 "7: Other"
+# Define names for default workspaces for which we configure key bindings later on.
+# We use variables to avoid repeating the names in multiple places.
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
@@ -115,18 +107,6 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-
 bar {
-    colors {
-        statusline #ffffff
-        separator #ffde61
-
-        focused_workspace  #7309F3 #7309F3 #ffffff
-        active_workspace   #7309F3 #7309F3 #ffffff
-        inactive_workspace #7309F3 #7309F3 #ffffff
-        urgent_workspace   #7309F3 #7309F3 #ffffff
-        binding_mode       #7309F3 #7309F3 #ffffff
-    }
         status_command i3status
 }
-#000000
