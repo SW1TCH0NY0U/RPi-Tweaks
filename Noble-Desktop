@@ -144,9 +144,9 @@ sudo systemctl daemon-reload
 
 # QBITTORRENT-STABLE
 
-sudo add-apt-repository ppa:qbittorrent-team/qbittorrent-stable -y
-sudo apt-get update -y
-sudo apt-get install --no-install-recommends --no-install-suggests qbittorrent qbittorrent-nox -y
+# sudo add-apt-repository ppa:qbittorrent-team/qbittorrent-stable -y
+# sudo apt-get update -y
+# sudo apt-get install --no-install-recommends --no-install-suggests qbittorrent qbittorrent-nox -y
 
 # START-XORG-XINIT-SERVER
 
