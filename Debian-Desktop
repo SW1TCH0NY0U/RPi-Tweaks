@@ -1,8 +1,14 @@
 #!/bin/bash
 
+# ALL-WRITE-PERMS
+
+sudo chmod -R 0777 /home/
+sudo chmod -R 0777 /home/pi/
+sudo chown -R pi:pi /home/
+
 # CONFIG-TXT-RPI5
 
-# sudo cp -R config.txt /boot/broadcom/
+sudo cp -R config.txt /boot/broadcom/
 
 # INSTALL-CERTIFICATES
 
@@ -17,7 +23,7 @@ sudo apt-get full-upgrade -y
 
 # MY-APPS
 
-sudo apt-get install --no-install-recommends --no-install-suggests -y systemd-resolved powerstat docker.io conky-all xserver-xorg-video-fbdev xserver-xorg xinit x11-xserver-utils xutils htop powertop udisks2 udiskie ntfs-3g kodi xfce4-settings xterm android-tools-adb android-tools-fastboot iptables wget curl git lbzip2 bzip2 p7zip xarchiver engrampa unrar unzip thunar thunar-volman gvfs gvfs-backends gvfs-fuse gnome-screenshot gnome-disk-utility i3-wm i3status i3lock i3blocks dmenu nitrogen feh scrot weechat znc wireguard-tools openvpn network-manager-gnome network-manager network-manager-openvpn network-manager-openvpn-gnome firefox-esr chromium pavucontrol pulseaudio volumeicon-alsa mpv vlc qbittorrent qbittorrent-nox x11-xserver-utils vnstat squid samba smbclient cifs-utils sakura mousepad pcmanfm pcmanfm-qt hexchat hexchat-plugins gnome-icon-theme lxappearance oxygen-icon-theme neofetch zsh rsync nmap screen openssh-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings hdparm
+sudo apt-get install --no-install-recommends --no-install-suggests -y powerstat docker.io conky-all xserver-xorg-video-fbdev xserver-xorg xinit x11-xserver-utils xutils htop powertop udisks2 udiskie ntfs-3g kodi xfce4-settings xterm android-tools-adb android-tools-fastboot iptables wget curl git lbzip2 bzip2 p7zip xarchiver engrampa unrar unzip thunar thunar-volman gvfs gvfs-backends gvfs-fuse gnome-screenshot gnome-disk-utility i3-wm i3status i3lock i3blocks dmenu nitrogen feh scrot weechat znc wireguard-tools openvpn network-manager-gnome network-manager network-manager-openvpn network-manager-openvpn-gnome firefox-esr chromium pavucontrol pulseaudio volumeicon-alsa mpv vlc qbittorrent qbittorrent-nox x11-xserver-utils vnstat squid samba smbclient cifs-utils sakura mousepad pcmanfm pcmanfm-qt hexchat hexchat-plugins gnome-icon-theme lxappearance oxygen-icon-theme neofetch zsh rsync nmap screen openssh-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings hdparm
 
 # CLEAN-PACKAGES
 
@@ -51,11 +57,7 @@ sudo mkdir -p /home/pi/Downloads/
 
 # USR-LOCAL-BIN
 
-sudo cp -R pia-vpn-on gpu-mesa-book chrome deb-update deb-remove my-ip my-refresh-rate rpi-brave rpi-webcord rpi-nzbget rpi-nzbhydra vpn-on vpn-off comp-off /usr/local/bin/
-
-# XORG-SERVER
-
-sudo cp -R 99-vc4.conf /etc/X11/xorg.conf.d/
+sudo cp -R off-hdparm cache-off pia-vpn-on gpu-mesa-book chrome deb-update deb-remove my-ip my-refresh-rate rpi-brave rpi-webcord rpi-nzbget rpi-nzbhydra vpn-on vpn-off comp-off /usr/local/bin/
 
 # COPY-OVER-CONKY
 
@@ -101,7 +103,7 @@ sudo apt purge meson -y
 sudo pip3 install meson 
 sudo pip3 install mako
 cd /home/pi/Downloads/
-git clone -b mesa-23.3.6 https://gitlab.freedesktop.org/mesa/mesa.git mesa
+git clone -b mesa-24.0.2 https://gitlab.freedesktop.org/mesa/mesa.git mesa
 cd mesa
 CFLAGS="-mcpu=cortex-a76" CXXFLAGS="-mcpu=cortex-a76" meson --prefix /usr -Dplatforms=x11 -Dvulkan-drivers=broadcom -Dgallium-drivers=kmsro,v3d,vc4 -Dbuildtype=release build
 ninja -C build -j4
@@ -133,12 +135,9 @@ cd /mnt/sdcard/HDDBackup/Linux/Commands/
 sudo cp -R VPN /home/pi/
 sudo cp -R masq.sh /home/pi/
 sudo cp -R ipt.sh /home/pi/
+sudo cp -R ovpn-masq.sh /home/pi/
 # sudo sh ipsec.sh
 # sudo sh certs.sh
-
-# RESOLVED
-
-# sudo cp -R resolved.conf /etc/systemd/resolved.conf
 
 # NZBGET-USENET
 
@@ -148,11 +147,11 @@ sudo cp -R nzbget /home/pi/Downloads/
 
 # ENABLE-SERVICES
 
-sudo systemctl enable smbd vnstat NetworkManager nzbget
+sudo systemctl enable smbd vnstat NetworkManager
 
 # DISABLE-SERVICES
 
-sudo systemctl disable --now squid nmbd lightdm docker zramswap
+sudo systemctl disable --now squid nmbd lightdm docker zramswap docker.socket nzbget
 
 # SAMBA-NETWORK-SHARES
 
@@ -164,6 +163,8 @@ sudo cp -R smb.conf /etc/samba/
 # START-XORG-SERVER
 
 sudo cp -R .xinitrc /home/pi/
+sudo cp -R 99-vc4.conf /etc/X11/xorg.conf.d/
+sudo touch /home/pi/.Xauthority
 
 # USER-AND-ROOT-PASSWORD-CHANGE
 
