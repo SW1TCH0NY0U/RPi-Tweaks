@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# UPDATE-SYSTEM
+
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get dist-upgrade -y
+sudo apt-get full-upgrade -y
+
+# SET-LOCATION-AND-TIME-AND-DATE
+
+setup -r
+
 # ALL-WRITE-PERMS
 
 sudo chmod -R 0777 /home/
@@ -23,7 +34,7 @@ sudo apt-get full-upgrade -y
 
 # MY-APPS
 
-sudo apt-get install --no-install-recommends --no-install-suggests -y powerstat docker.io conky-all xserver-xorg-video-fbdev xserver-xorg xinit x11-xserver-utils xutils htop powertop udisks2 udiskie ntfs-3g kodi xfce4-settings xterm android-tools-adb android-tools-fastboot iptables wget curl git lbzip2 bzip2 p7zip xarchiver engrampa unrar unzip thunar thunar-volman gvfs gvfs-backends gvfs-fuse gnome-screenshot gnome-disk-utility i3-wm i3status i3lock i3blocks dmenu nitrogen feh scrot weechat znc wireguard-tools openvpn network-manager-gnome network-manager network-manager-openvpn network-manager-openvpn-gnome firefox-esr chromium pavucontrol pulseaudio volumeicon-alsa mpv vlc qbittorrent qbittorrent-nox x11-xserver-utils vnstat squid samba smbclient cifs-utils sakura mousepad pcmanfm pcmanfm-qt hexchat hexchat-plugins gnome-icon-theme lxappearance oxygen-icon-theme neofetch zsh rsync nmap screen openssh-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings hdparm
+sudo apt-get install --no-install-recommends --no-install-suggests -y gimp qemu-user-static powerstat docker.io conky-all xserver-xorg-video-fbdev xserver-xorg xinit x11-xserver-utils xutils htop powertop udisks2 udiskie ntfs-3g kodi xfce4-settings xterm android-tools-adb android-tools-fastboot iptables wget curl git lbzip2 bzip2 p7zip xarchiver engrampa unrar unzip thunar thunar-volman gvfs gvfs-backends gvfs-fuse gnome-screenshot gnome-disk-utility i3-wm i3status i3lock i3blocks dmenu nitrogen feh scrot weechat znc wireguard-tools openvpn network-manager-gnome network-manager network-manager-openvpn network-manager-openvpn-gnome firefox-esr chromium pavucontrol pulseaudio volumeicon-alsa mpv vlc qbittorrent qbittorrent-nox x11-xserver-utils vnstat squid samba smbclient cifs-utils sakura mousepad pcmanfm pcmanfm-qt hexchat hexchat-plugins gnome-icon-theme lxappearance oxygen-icon-theme neofetch zsh rsync nmap screen openssh-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings hdparm
 
 # CLEAN-PACKAGES
 
@@ -57,7 +68,7 @@ sudo mkdir -p /home/pi/Downloads/
 
 # USR-LOCAL-BIN
 
-sudo cp -R off-hdparm cache-off pia-vpn-on gpu-mesa-book chrome deb-update deb-remove my-ip my-refresh-rate rpi-brave rpi-webcord rpi-nzbget rpi-nzbhydra vpn-on vpn-off comp-off /usr/local/bin/
+sudo cp -R off-hdparm cache-off pia-vpn-on chrome deb-update deb-remove my-ip my-refresh-rate rpi-brave rpi-webcord rpi-nzbget rpi-nzbhydra vpn-on vpn-off comp-off /usr/local/bin/
 
 # COPY-OVER-CONKY
 
@@ -98,14 +109,15 @@ sudo apt-get install --no-install-recommends --no-install-suggests -y python3-pi
         libclc-16-dev libelf-dev git build-essential mesa-utils \
         libvulkan-dev ninja-build libvulkan1 python3-mako \
         libdrm-dev libxshmfence-dev libxxf86vm-dev libunwind-dev \
-		valgrind libzstd-dev vulkan-tools python3-pip
+		valgrind libzstd-dev vulkan-tools python3-pip libglvnd-dev libwayland-egl-backend-dev
 sudo apt purge meson -y
 sudo pip3 install meson 
 sudo pip3 install mako
 cd /home/pi/Downloads/
-git clone -b mesa-24.0.2 https://gitlab.freedesktop.org/mesa/mesa.git mesa
+git clone -b mesa-24.0.3 https://gitlab.freedesktop.org/mesa/mesa.git mesa --depth=1
 cd mesa
-CFLAGS="-mcpu=cortex-a76" CXXFLAGS="-mcpu=cortex-a76" meson --prefix /usr -Dplatforms=x11 -Dvulkan-drivers=broadcom -Dgallium-drivers=kmsro,v3d,vc4 -Dbuildtype=release build
+COMMON_FLAGS="-mcpu=cortex-a76+crc+crypto -O2 -pipe -mtune=cortex-a76" meson --prefix /usr -Dbuildtype=release build -Dglx=disabled -Dplatforms=x11,wayland -Dllvm=disabled -Dvulkan-drivers=broadcom -Dgallium-drivers=v3d,vc4,kmsro \
+-Dglvnd=true
 ninja -C build -j4
 sudo ninja -C build install
 
@@ -151,7 +163,7 @@ sudo systemctl enable smbd vnstat NetworkManager
 
 # DISABLE-SERVICES
 
-sudo systemctl disable --now squid nmbd lightdm docker zramswap docker.socket nzbget
+sudo systemctl disable --now squid nmbd docker zramswap docker.socket nzbget lightdm console-setup
 
 # SAMBA-NETWORK-SHARES
 
@@ -163,8 +175,11 @@ sudo cp -R smb.conf /etc/samba/
 # START-XORG-SERVER
 
 sudo cp -R .xinitrc /home/pi/
-sudo cp -R 99-vc4.conf /etc/X11/xorg.conf.d/
+# sudo cp -R 99-vc4.conf /etc/X11/xorg.conf.d/
+sudo cp -r .profile /home/pi/
 sudo touch /home/pi/.Xauthority
+sudo chmod -R 0777 /home/pi/.Xauthority
+sudo chmod -R 0777 /home/pi/.xinitrc
 
 # USER-AND-ROOT-PASSWORD-CHANGE
 
@@ -179,3 +194,10 @@ echo Changing SAMBA password for the user pi...
 sudo smbpasswd -a pi
 echo Changing SAMBA password for the user root...
 sudo smbpasswd -a root
+
+# PERMISSIONS
+
+sudo chmod -R 0777 /home/
+sudo chmod -R 0777 /home/pi/
+sudo chown -R pi:pi /home/
+sudo chown -R pi:pi /home/pi/
