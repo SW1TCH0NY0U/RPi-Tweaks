@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ### MESA-GRAPHICS
 
 sudo chmod -R 0777 /home/
@@ -15,13 +17,14 @@ sudo apt-get install --no-install-recommends --no-install-suggests -y python3-pi
         libclc-16-dev libelf-dev git build-essential mesa-utils \
         libvulkan-dev ninja-build libvulkan1 python3-mako \
         libdrm-dev libxshmfence-dev libxxf86vm-dev libunwind-dev \
-		valgrind libzstd-dev vulkan-tools python3-pip
+		valgrind libzstd-dev vulkan-tools python3-pip libglvnd-dev libwayland-egl-backend-dev
 sudo apt purge meson -y
 sudo pip3 install meson 
 sudo pip3 install mako
 cd /home/pi/Downloads/
-git clone -b mesa-23.3.6 https://gitlab.freedesktop.org/mesa/mesa.git mesa
+git clone -b mesa-24.0.3 https://gitlab.freedesktop.org/mesa/mesa.git mesa --depth=1
 cd mesa
-CFLAGS="-mcpu=cortex-a76" CXXFLAGS="-mcpu=cortex-a76" meson --prefix /usr -Dplatforms=x11 -Dvulkan-drivers=broadcom -Dgallium-drivers=kmsro,v3d,vc4 -Dbuildtype=release build
+COMMON_FLAGS="-mcpu=cortex-a76+crc+crypto -O2 -pipe -mtune=cortex-a76" meson --prefix /usr -Dbuildtype=release build -Dglx=disabled -Dplatforms=x11,wayland -Dllvm=disabled -Dvulkan-drivers=broadcom -Dgallium-drivers=v3d,vc4,kmsro \
+-Dglvnd=true
 ninja -C build -j4
 sudo ninja -C build install
