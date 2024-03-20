@@ -51,6 +51,7 @@ sudo apt-get install -y --no-install-recommends --no-install-suggests brave-brow
 
 # WINDOW-MANAGER
 
+sudo mkdir -p /home/pi/Desktop/
 sudo mkdir -p /home/pi/Downloads/
 sudo mkdir -p /home/pi/.config/
 sudo cp -R /mnt/sdcard/NEW/i3status /home/pi/.config/
