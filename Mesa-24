@@ -1,0 +1,30 @@
+#!/bin/bash
+
+### MESA-GRAPHICS
+
+sudo chmod -R 0777 /home/
+sudo chown -R pi:pi /home/
+sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
+sudo apt-get install --no-install-recommends --no-install-suggests -y python3-pip libxcb-randr0-dev libxrandr-dev \
+        libxcb-xinerama0-dev libxinerama-dev libxcursor-dev \
+        libxcb-cursor-dev libxkbcommon-dev xutils-dev \
+        xutils-dev libpthread-stubs0-dev libpciaccess-dev \
+        libffi-dev x11proto-xext-dev libxcb1-dev libxcb-*dev \
+        bison flex libssl-dev libgnutls28-dev x11proto-dri2-dev \
+        x11proto-dev libx11-dev libxcb-glx0-dev \
+        libx11-xcb-dev libxext-dev libxdamage-dev libxfixes-dev \
+        libva-dev x11proto-randr-dev x11proto-present-dev \
+        libclc-16-dev libelf-dev git build-essential mesa-utils \
+        libvulkan-dev ninja-build libvulkan1 python3-mako \
+        libdrm-dev libxshmfence-dev libxxf86vm-dev libunwind-dev \
+		valgrind libzstd-dev vulkan-tools python3-pip libglvnd-dev libwayland-egl-backend-dev
+sudo apt purge meson -y
+sudo pip3 install meson 
+sudo pip3 install mako
+cd /home/pi/Downloads/
+git clone -b mesa-24.0.3 https://gitlab.freedesktop.org/mesa/mesa.git mesa --depth=1
+cd mesa
+COMMON_FLAGS="-mcpu=cortex-a76+crc+crypto -O2 -pipe -mtune=cortex-a76" meson setup --prefix /usr -Dglx=disabled -Dplatforms=x11,wayland -Dllvm=disabled -Dvulkan-drivers=broadcom -Dgallium-drivers=v3d,vc4,kmsro \
+-Dglvnd=true -Dbuildtype=release build
+ninja -C build -j4
+sudo ninja -C build install
